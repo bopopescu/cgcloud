@@ -66,7 +66,7 @@ class CreateClusterCommand( ClusterTypeCommand, RecreateCommand ):
 
         self.option( '--cluster-name', '-c', metavar='NAME',
                      help=heredoc( """A name for the new cluster. If absent, the instance ID of
-                     the master will be used. Cluster names do not need to be unique, but they
+                     the main will be used. Cluster names do not need to be unique, but they
                      should be in order to avoid user error.""" ) )
 
         self.option( '--num-workers', '-s', metavar='NUM',
@@ -277,7 +277,7 @@ class GrowClusterCommand( ClusterCommand, RecreateCommand ):
         workers = first_worker.list( leader_instance_id=leader.instance_id )
         used_cluster_ordinals = set( w.cluster_ordinal for w in workers )
         assert len( used_cluster_ordinals ) == len( workers )  # check for collisions
-        assert 0 not in used_cluster_ordinals  # master has 0
+        assert 0 not in used_cluster_ordinals  # main has 0
         used_cluster_ordinals.add( 0 )  # to make the math easier
         cluster_ordinal = allocate_cluster_ordinals( num=options.num_workers,
                                                      used=used_cluster_ordinals )
@@ -395,7 +395,7 @@ class SshClusterCommand( SshCommandMixin, ApplyClusterCommand ):
 
 class RsyncClusterCommand( RsyncCommandMixin, ApplyClusterCommand ):
     """
-    Run rsync against each node in a cluster. The rsync program will be run against master first,
+    Run rsync against each node in a cluster. The rsync program will be run against main first,
     followed by all workers in parallel. To avoid being prompted for confirmation of the host
     key, use --ssh-opts="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no".
     """
